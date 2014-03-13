@@ -129,6 +129,27 @@
      * @return {boolean}
      */
     fQ.prototype.isValid = function () {
+        var i, field,
+            errors = [],
+            fields = this.form.elements;
+
+        if (settings.validator) {
+            for (i = 0; i < fields.length; i++) {
+                field = fields[i];
+
+                if (!isValid(field)) {
+                    errors.push(getName(field));
+                }
+            }
+
+            if (errors.length == 0) {
+                this._errors = undefined;
+            } else {
+                this._errors = errors;
+                return false;
+            }
+        }
+
         return true
     }
 
