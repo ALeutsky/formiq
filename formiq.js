@@ -125,7 +125,7 @@
     }
 
     /**
-     *
+     * @name fQ.isValid
      * @return {boolean}
      */
     fQ.prototype.isValid = function () {
