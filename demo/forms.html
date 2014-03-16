@@ -3,14 +3,18 @@
 <head>
     <meta charset="utf-8">
     <title></title>
-    <script src="formiq.js"></script>
+    <script src="../formiq.js"></script>
     <script>
+        // You can use browser console.
+        // > form.getValue()
+        // > ...
+        // > form.setValue(...)
+        // > ...
         var form;
         function ready() {
-            form = new fQ("#form");
-            console.log(form);
+            form = new formiQ("#form");
+            console.log(form.getValue());
         }
-
     </script>
 </head>
 <body onload="ready()">

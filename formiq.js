@@ -1,16 +1,24 @@
+/**
+ * formiQ - library to work with forms
+ * @author Alexander Leutsky
+ * @license MIT
+ */
+
 (function (window, document) {
     var settings = {
         validatorAttr: "data-validator",
-        validator: window.validiq
+        validator: window["validiQ"]
     }
 
     /**
+     * @alias formiQ
      * @constructor
-     * @param selector
+     * @expose
+     * @param {string|jQuery|HTMLFormElement} selector
      */
-    var fQ = function (selector) {
-        if (!(this instanceof fQ)) {
-            return new fQ(selector);
+    var formiQ = function (selector) {
+        if (!(this instanceof formiQ)) {
+            return new formiQ(selector);
         }
 
         var form;
@@ -31,10 +39,10 @@
     }
 
     /**
-     * @name fQ.getValue
-     * @return {object}
+     * @expose
+     * @return {Object}
      */
-    fQ.prototype.getValue = function () {
+    formiQ.prototype.getValue = function () {
         var i, field, type, name, value,
             result = {},
             fields = this.form.elements;
@@ -69,11 +77,11 @@
     }
 
     /**
-     * @name fQ.setValue
-     * @param name
+     * @expose
+     * @param {string|Object} name
      * @param value
      */
-    fQ.prototype.setValue = function (name, value) {
+    formiQ.prototype.setValue = function (name, value) {
         var values;
 
         if (typeof name == "string") {
@@ -125,10 +133,10 @@
     }
 
     /**
-     * @name fQ.isValid
+     * @expose
      * @return {boolean}
      */
-    fQ.prototype.isValid = function () {
+    formiQ.prototype.isValid = function () {
         var i, field,
             errors = [],
             fields = this.form.elements;
@@ -154,31 +162,34 @@
     }
 
     /**
-     * @name fQ.errors
-     * @return {object}
+     * @expose
+     * @return {Object|undefined}
      */
-    fQ.prototype.errors = function () {
+    formiQ.prototype.errors = function () {
         return this._errors;
     }
 
     /**
-     * @name fQ.submit
+     * Submit form
+     * @expose
      */
-    fQ.prototype.submit = function () {
+    formiQ.prototype.submit = function () {
         this.form.submit();
     }
 
     /**
-     * @name fQ.reset
+     * Reset form
+     * @expose
      */
-    fQ.prototype.reset = function () {
+    formiQ.prototype.reset = function () {
         this.form.reset();
     }
 
     /**
-     * @name fQ.destroy
+     * Destroy formiQ object
+     * @expose
      */
-    fQ.prototype.destroy = function () {
+    formiQ.prototype.destroy = function () {
         this.form = undefined;
     }
 
@@ -215,5 +226,5 @@
         }
     }
 
-    window.formiQ = window.fQ = fQ;
+    window.formiQ = formiQ;
 }) (window, document);
