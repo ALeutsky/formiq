@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../formiq.js"></script>
+    <script>
+        // You can use browser console.
+        // > form.getValue()
+        // > ...
+        // > form.setValue(...)
+        // > ...
+        var form;
+        function ready() {
+            form = new formiQ("#form");
+            console.log(form.getValue());
+        }
+    </script>
+</head>
+<body onload="ready()">
+<form id="form" action="#" method="GET">
+    <input name="hidden" type="hidden">
+    <input name="text" type="text"><br>
+    <input name="text" type="text"><br>
+    <textarea name="textarea"></textarea><br>
+    <label><input name="checkbox" type="checkbox" value="c1" checked=""> Click 1</label><br>
+    <label><input name="checkbox" type="checkbox" value="c2"> Click 2</label><br>
+    <label><input name="checkbox" type="checkbox" value="c3"> Click 3</label><br>
+    <label><input name="radio" type="radio" value="r1"> Radio 1</label><br>
+    <label><input name="radio" type="radio" value="r2"> Radio 2</label><br>
+    <label><input name="radio" type="radio" value="r3"> Radio 3</label><br>
+    <select name="select">
+        <option value="sA">Option A</option>
+        <option value="sB">Option B</option>
+    </select><br>
+    <button>Submit</button>
+</form>
+
+<input name="hidden2" form="form" value="32">
+</body>
+</html>
