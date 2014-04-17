@@ -5,9 +5,11 @@
  */
 
 (function (window, document) {
-    var settings = {
+    var globalSettings = {
         validatorAttr: "data-validator",
-        validator: window["validiQ"]
+        validator: window["validiQ"],
+        errors: {},
+        ignore: []
     }
 
     /**
@@ -15,13 +17,15 @@
      * @constructor
      * @expose
      * @param {string|jQuery|HTMLFormElement} selector
+     * @param {object} options
      */
-    var formiQ = function (selector) {
+    var formiQ = function (selector, options) {
         if (!(this instanceof formiQ)) {
             return new formiQ(selector);
         }
 
-        var form;
+        var form,
+            settings = this.settings = extend({}, globalSettings, options);
 
         if (typeof selector == "string") {
             form = document.querySelector(selector);
@@ -36,7 +40,37 @@
         }
 
         this.form = form;
+
+
     }
+
+    /**
+     *
+     * @param options
+     */
+    formiQ.configure = function (options) {
+        if (this instanceof formiQ) {
+            extend(this.settings, options);
+
+            if (typeof this.settings.highlight == "function") {
+                this.highlight = this.settings.highlight;
+                delete this.settings.highlight;
+            }
+
+            if (typeof this.settings.unhighlight == "function") {
+                this.unhighlight = this.settings.unhighlight;
+                delete this.settings.unhighlight;
+            }
+        } else {
+            extend(globalSettings, options);
+        }
+    }
+
+    /**
+     *
+     * @type {Function}
+     */
+    formiQ.prototype.configure = formiQ.configure;
 
     /**
      * @expose
@@ -52,6 +86,8 @@
 
             type = getType(field);
             name = getName(field);
+
+            if (!name) continue;
 
             if (type == "radio" || type == "checkbox") {
                 if (isChecked(field)) {
@@ -132,33 +168,60 @@
         }
     }
 
+    formiQ.prototype.eachField = function (func) {
+        var i,
+            fields = this.form.elements;
+
+        for (i = 0; i < fields.length; i++) {
+            func.call(this, fields[i], getName(fields[i]), i);
+        }
+    }
+
+    formiQ.prototype.validate = function () {
+        var i, field, fieldName,
+            errors = [],
+            fields = this.form.elements;
+
+        this._errors = undefined;
+
+        if (this.settings.validator) {
+            for (i = 0; i < fields.length; i++) {
+                field = fields[i];
+                fieldName = getName(field);
+
+                try {
+                    this.validateField(field);
+                    //this.unhighlight(field, fieldName);
+                } catch (e) {
+                    errors.push(e);
+                    //this.highlight(field, fieldName, e);
+                }
+            }
+
+            if (errors.length > 0) {
+                this._errors = errors;
+            }
+        }
+    }
+
+
+    formiQ.prototype.validateField = function (field) {
+        var vquery = field.getAttribute(this.settings.validatorAttr);
+
+        if (vquery) {
+            return this.settings.validator(vquery)(getValue(field));
+        }
+    }
+
+
     /**
      * @expose
      * @return {boolean}
      */
     formiQ.prototype.isValid = function () {
-        var i, field,
-            errors = [],
-            fields = this.form.elements;
+        this.validate();
 
-        if (settings.validator) {
-            for (i = 0; i < fields.length; i++) {
-                field = fields[i];
-
-                if (!isValid(field)) {
-                    errors.push(getName(field));
-                }
-            }
-
-            if (errors.length == 0) {
-                this._errors = undefined;
-            } else {
-                this._errors = errors;
-                return false;
-            }
-        }
-
-        return true
+        return !this._errors;
     }
 
     /**
@@ -193,11 +256,35 @@
         this.form = undefined;
     }
 
+    /**
+     * On invalid field
+     * @param field
+     * @param fieldName
+     * @param validationError
+     */
+    //formiQ.prototype.onInvalidField = function (field, fieldName, validationError) {}
+
+    /**
+     * On valid field
+     * @param field
+     * @param fieldName
+     */
+    //formiQ.prototype.onValidField = function (field, fieldName) {}
+
+
+    /**
+     * On reset field
+     * @param field
+     * @param fieldName
+     */
+    //formiQ.prototype.onResetField = function (field, fieldName) {}
+
+
     function isChecked (el) {
         return el.checked;
     }
 
-    function isValid (el) {
+    function isValid (el, settings) {
         var vquery = el.getAttribute(settings.validatorAttr);
 
         if (vquery) {
@@ -205,6 +292,22 @@
         } else {
             return true;
         }
+    }
+
+    function extend (source) {
+        var i, k, dict;
+        for (i = 1; i < arguments.length; i++) {
+            dict = arguments[i];
+
+            if (dict && typeof dict == "object") {
+                for (k in dict) {
+                    source[k] = dict[k];
+                }
+            }
+
+        }
+
+        return source;
     }
 
     function getType (el) {
