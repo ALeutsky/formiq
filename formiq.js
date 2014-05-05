@@ -12,10 +12,20 @@
         ignore: []
     }
 
+    var currentFormValue = {};
+
     if (isFunction(window["validiQ"])) {
-        globalSettings.validator = new window["validiQ"]({
+        var validator = globalSettings.validator = new window["validiQ"]({
             throwErrors: true,
             compiler: "vquery"
+        });
+
+        validator.addValidator("equalTo", function (val, targetFieldName) {
+            if ((targetFieldName in currentFormValue) && (val === currentFormValue[targetFieldName])) {
+                return true;
+            }
+
+            return false;
         });
     }
 
@@ -192,6 +202,8 @@
         this._errors = undefined;
 
         if (this.settings.validator) {
+            currentFormValue = this.getValue();
+
             for (i = 0; i < fields.length; i++) {
                 field = fields[i];
                 fieldName = getName(field);
