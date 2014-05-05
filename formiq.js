@@ -7,9 +7,16 @@
 (function (window, document) {
     var globalSettings = {
         validatorAttr: "data-validator",
-        validator: window["validiQ"],
+        validator: undefined,
         errors: {},
         ignore: []
+    }
+
+    if (isFunction(window["validiQ"])) {
+        globalSettings.validator = new window["validiQ"]({
+            throwErrors: true,
+            compiler: "vquery"
+        });
     }
 
     /**
@@ -193,6 +200,8 @@
                     this.validateField(field);
                     //this.unhighlight(field, fieldName);
                 } catch (e) {
+                    e.field = field;
+                    e.fieldName = fieldName;
                     errors.push(e);
                     //this.highlight(field, fieldName, e);
                 }
@@ -280,18 +289,12 @@
     //formiQ.prototype.onResetField = function (field, fieldName) {}
 
 
-    function isChecked (el) {
-        return el.checked;
+    function isFunction (obj) {
+        return typeof obj === "function";
     }
 
-    function isValid (el, settings) {
-        var vquery = el.getAttribute(settings.validatorAttr);
-
-        if (vquery) {
-            return settings.validator(vquery)(getValue(el));
-        } else {
-            return true;
-        }
+    function isChecked (el) {
+        return el.checked;
     }
 
     function extend (source) {
