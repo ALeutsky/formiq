@@ -68,7 +68,7 @@
     formiQ.configure = function (options) {
         if (this instanceof formiQ) {
             extend(this.settings, options);
-
+            /*
             if (typeof this.settings.highlight == "function") {
                 this.highlight = this.settings.highlight;
                 delete this.settings.highlight;
@@ -78,6 +78,7 @@
                 this.unhighlight = this.settings.unhighlight;
                 delete this.settings.unhighlight;
             }
+            */
         } else {
             extend(globalSettings, options);
         }
