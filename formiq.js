@@ -194,7 +194,7 @@
             if (field.required && (!(fieldName in values && values[fieldName]))) {
                 errors.push({
                     fieldName: fieldName,
-                    errorType: "required",
+                    type: "required",
                     message: this.getErrorMessage(fieldName, "required")
                 });
             }
