@@ -6,28 +6,11 @@
 
 (function (window, document) {
     var globalSettings = {
-        validatorAttr: "data-validator",
         validator: undefined,
         errors: {},
-        ignore: []
-    }
-
-    var currentFormValue = {};
-
-    if (isFunction(window["validiQ"])) {
-        var validator = globalSettings.validator = new window["validiQ"]({
-            throwErrors: true,
-            compiler: "vquery"
-        });
-
-        validator.addValidator("equalTo", function (val, targetFieldName) {
-            if ((targetFieldName in currentFormValue) && (val === currentFormValue[targetFieldName])) {
-                return true;
-            }
-
-            return false;
-        });
-    }
+        ignore: [],
+        errorMessages: {}
+    };
 
     /**
      * @alias formiQ
@@ -198,42 +181,45 @@
     formiQ.prototype.validate = function () {
         var i, field, fieldName,
             errors = [],
-            fields = this.form.elements;
+            fields = this.form.elements,
+            values = this.getValue();
 
         this._errors = undefined;
 
-        if (this.settings.validator) {
-            currentFormValue = this.getValue();
+        for (i = 0; i < fields.length; i++) {
+            field = fields[i];
+            fieldName = getName(field);
 
-            for (i = 0; i < fields.length; i++) {
-                field = fields[i];
-                fieldName = getName(field);
-
-                try {
-                    this.validateField(field);
-                    //this.unhighlight(field, fieldName);
-                } catch (e) {
-                    e.field = field;
-                    e.fieldName = fieldName;
-                    errors.push(e);
-                    //this.highlight(field, fieldName, e);
-                }
+            // required
+            if (field.required && (!(fieldName in values && values[fieldName]))) {
+                errors.push({
+                    fieldName: fieldName,
+                    type: "required",
+                    message: this.getErrorMessage(fieldName, "required")
+                });
             }
 
-            if (errors.length > 0) {
-                this._errors = errors;
+            // by field type
+
+        }
+
+        if (errors.length > 0) {
+            this._errors = errors;
+        }
+    };
+
+
+    formiQ.prototype.getErrorMessage = function (fieldName, errorType) {
+        var errorMessages = this.settings.errorMessages;
+
+        if (errorMessages) {
+            if (fieldName in errorMessages && errorType in errorMessages[fieldName]) {
+                return errorMessages[fieldName][errorType];
             }
         }
-    }
 
-
-    formiQ.prototype.validateField = function (field) {
-        var vquery = field.getAttribute(this.settings.validatorAttr);
-
-        if (vquery) {
-            return this.settings.validator(vquery)(getValue(field));
-        }
-    }
+        return "";
+    };
 
 
     /**
@@ -344,6 +330,7 @@
             return el.value;
         }
     }
+
 
     window.formiQ = formiQ;
 }) (window, document);

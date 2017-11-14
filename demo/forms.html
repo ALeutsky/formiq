@@ -12,16 +12,26 @@
         // > ...
         var form;
         function ready() {
-            form = new formiQ("#form");
+            form = new formiQ("#form", {
+                errorMessages: {
+                    text1: {
+                        required: "Text1 is required"
+                    }
+                }
+            });
             console.log(form.getValue());
+
+            form.validate();
+            console.log(form.errors());
         }
     </script>
 </head>
 <body onload="ready()">
-<form id="form" action="#" method="GET">
+<form id="form" action="#" method="GET"  novalidate>
     <input name="hidden" type="hidden">
-    <input name="text" type="text"><br>
-    <input name="text" type="text"><br>
+    <input name="text1" type="text" placeholder="text1" required><br>
+    <input name="text2" type="text" placeholder="text2"><br>
+    <input name="text2" type="text" placeholder="text2"><br>
     <textarea name="textarea"></textarea><br>
     <label><input name="checkbox" type="checkbox" value="c1" checked=""> Click 1</label><br>
     <label><input name="checkbox" type="checkbox" value="c2"> Click 2</label><br>
