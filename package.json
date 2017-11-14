@@ -1,4 +1,5 @@
 {
   "name": "formiq",
-  "main": "formiq.js"
+  "main": "formiq.js",
+  "version": "1.0.1"
 }
