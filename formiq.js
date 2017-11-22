@@ -9,7 +9,13 @@
         validator: undefined,
         errors: {},
         ignore: [],
-        errorMessages: {}
+        errorMessages: {},
+        converterAttribute: "data-conv",
+        converters: {
+            number: function (val) {
+                return (val === "") ? null : +val;
+            }
+        }
     };
 
     /**
@@ -80,7 +86,10 @@
     formiQ.prototype.getValue = function () {
         var i, field, type, name, value,
             result = {},
-            fields = this.form.elements;
+            fields = this.form.elements,
+            convAttr = this.settings.converterAttribute,
+            converter,
+            converters = this.settings.converters || {};
 
         for (i = 0; i < fields.length; i++) {
             field = fields[i];
@@ -98,6 +107,13 @@
                 }
             } else {
                 value = field.value;
+            }
+
+            if (field.hasAttribute(convAttr)) {
+                converter = field.getAttribute(convAttr);
+                if (typeof converters[converter] == "function") {
+                    value = converter[converter](value);
+                }
             }
 
             if (name in result) {
