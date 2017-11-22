@@ -112,7 +112,7 @@
             if (field.hasAttribute(convAttr)) {
                 converter = field.getAttribute(convAttr);
                 if (typeof converters[converter] == "function") {
-                    value = converter[converter](value);
+                    value = converters[converter](value);
                 }
             }
 

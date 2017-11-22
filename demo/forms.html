@@ -26,10 +26,10 @@
         }
     </script>
 </head>
-<body onload="ready()">
+<body >
 <form id="form" action="#" method="GET"  novalidate>
     <input name="hidden" type="hidden">
-    <input name="text1" type="text" placeholder="text1" required><br>
+    <input name="text1" type="text" placeholder="text1" required data-conv="number"><br>
     <input name="text2" type="text" placeholder="text2"><br>
     <input name="text2" type="text" placeholder="text2"><br>
     <textarea name="textarea"></textarea><br>
@@ -43,7 +43,7 @@
         <option value="sA">Option A</option>
         <option value="sB">Option B</option>
     </select><br>
-    <button>Submit</button>
+    <button type="button" onclick="ready()">Submit</button>
 </form>
 
 <input name="hidden2" form="form" value="32">
