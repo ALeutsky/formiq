@@ -348,7 +348,7 @@
     }
 
     if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports == exports) {
-        exports = module.exports = formatiQ;
+        exports = module.exports = formiQ;
     } else {
         root.formiQ = formiQ;
     }
