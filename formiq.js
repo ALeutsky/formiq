@@ -37,7 +37,7 @@
             form = root.document.querySelector(selector);
         } else if (selector instanceof HTMLFormElement) {
             form = selector;
-        } else if (root.jQuery && selector instanceof root.jQuery && selector.length) {
+        } else if (root.jQuery && (selector instanceof root.jQuery || selector.jquery) && selector.length) {
             form = selector[0];
         }
 
