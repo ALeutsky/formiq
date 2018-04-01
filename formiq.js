@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-(function (window, document) {
+(function (root) {
     var globalSettings = {
         validator: undefined,
         errors: {},
@@ -34,10 +34,10 @@
             settings = this.settings = extend({}, globalSettings, options);
 
         if (typeof selector == "string") {
-            form = document.querySelector(selector);
+            form = root.document.querySelector(selector);
         } else if (selector instanceof HTMLFormElement) {
             form = selector;
-        } else if (window.jQuery && selector instanceof window.jQuery && selector.length) {
+        } else if (root.jQuery && selector instanceof root.jQuery && selector.length) {
             form = selector[0];
         }
 
@@ -347,6 +347,10 @@
         }
     }
 
+    if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports == exports) {
+        exports = module.exports = formatiQ;
+    } else {
+        root.formiQ = formiQ;
+    }
 
-    window.formiQ = formiQ;
-}) (window, document);
+}) (this);
